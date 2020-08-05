@@ -4,6 +4,7 @@
       <div>
         <input type="file" @change="handleFileChange" :disabled="isUploading" />
         <button @click="handleUploadButtonClick" :disabled="!file || isUploading">Upload</button>
+        <button @click="handleCancelButtonClick" v-if="file && isUploading">Cancel</button>
       </div>
       <div class="loading" v-if="isUploading">上传中 {{ progressText }}</div>
       <div class="error" v-if="isFail">{{ error }}</div>
@@ -22,7 +23,7 @@ const sk = process.env.BCE_SK;
 const sessionToken = process.env.BCE_ST;
 
 // const BosClient = window.baidubce.sdk.BosClient;
-const bucket = 'maps';
+const bucket = process.env.BOS_BUCKET;
 
 export default {
   name: 'App',
@@ -54,14 +55,12 @@ export default {
     },
     async handleUploadButtonClick() {
       let ext = getExt(this.file.name);
-      let key = `adtest/${nanoid()}${ext}`;
+      let key = `bce-bos-lite-test/${nanoid()}${ext}`;
       this.status = 1;
       try {
-        let promise = this.client.putObjectFromBlob(bucket, key, this.file, {
+        await this.client.putObjectFromBlob(bucket, key, this.file, {
           'Content-Type': getContentType(ext)
         });
-        this.cancelRequest = promise.abort;
-        await promise;
       }
       catch (err) {
         this.status = 3;
@@ -74,7 +73,12 @@ export default {
     },
     handleClientProgress({loaded, total}) {
       this.progress = loaded / total;
-    }
+    },
+    handleCancelButtonClick() {
+      if (this.client.cancelRequest) {
+        this.client.cancelRequest('User cancelled uploading');
+      }
+    },
   },
   mounted() {
     const client = new BosClient({

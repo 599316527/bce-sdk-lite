@@ -1,6 +1,6 @@
 {
   "name": "bce-sdk-lite",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "index.js",
   "files": [
@@ -29,6 +29,7 @@
     "webpack-cli": "^4.0.0-beta.2"
   },
   "scripts": {
+    "build": "webpack",
     "test": "jest"
   },
   "keywords": [],
