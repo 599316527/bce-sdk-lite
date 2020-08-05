@@ -1,6 +1,7 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 module.exports = {
     entry: './index.js',
@@ -25,5 +26,8 @@ module.exports = {
         minimizer: [new TerserPlugin()],
     },
 
-    // plugins: [new BundleAnalyzerPlugin()],
+    plugins: [
+        new LodashModuleReplacementPlugin(),
+        // new BundleAnalyzerPlugin(),
+    ],
 };
