@@ -1,7 +1,15 @@
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
+    publicPath: '',
+
     devServer: {
         disableHostCheck: true
+    },
+    configureWebpack: {
+        plugins: [
+            new LodashModuleReplacementPlugin,
+        ]
     },
     chainWebpack: (config) => {
         config.plugin('define').tap((definitions) => {

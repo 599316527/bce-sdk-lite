@@ -7,7 +7,7 @@
         <button @click="handleCancelButtonClick" v-if="file && isUploading">Cancel</button>
       </div>
       <div class="loading" v-if="isUploading">上传中 {{ progressText }}</div>
-      <div class="error" v-if="isFail">{{ error }}</div>
+      <div class="error" v-if="isFail">上传失败：{{ error }}</div>
       <div class="success" v-if="isSuccess">上传成功!
         <a :href="url" target="_blank">打开</a>
       </div>
@@ -16,7 +16,7 @@
 
 <script>
 import {nanoid} from 'nanoid';
-import {BosClient} from '../../index';
+import {BosClient} from 'bce-sdk-lite-local';
 
 const ak = process.env.BCE_AK;
 const sk = process.env.BCE_SK;
@@ -55,7 +55,7 @@ export default {
     },
     async handleUploadButtonClick() {
       let ext = getExt(this.file.name);
-      let key = `bce-bos-lite-test/${nanoid()}${ext}`;
+      let key = `test/${nanoid()}${ext}`;
       this.status = 1;
       try {
         await this.client.putObjectFromBlob(bucket, key, this.file, {
@@ -64,7 +64,7 @@ export default {
       }
       catch (err) {
         this.status = 3;
-        this.error = '上传失败：' + err.message;
+        this.error = err.message;
         console.log(err);
         return;
       }
